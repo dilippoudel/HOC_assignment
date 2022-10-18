@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Timer</title>
+  </head>
+  <body>
+    <button class="startBtn">Start</button>
+    <button class="stopBtn">Stop</button>
+    <button class="resetBtn">Reset</button>
+
+    <script>
+      class Timer {
+        constructor(sec, min, hour, interval, elapseTime, isClockRunning) {
+          this.sec = 0;
+          this.min = 0;
+          this.hour = 0;
+          this.interval = 0;
+          this.elapseTime = "";
+          this.isClockRunning = false;
+        }
+
+        start() {
+          if (!this.isClockRunning) {
+            this.interval = setInterval(() => {
+              if (this.sec > 59) {
+                this.sec = 0;
+                this.min = this.min + 1;
+              }
+              if (this.min > 59) {
+                this.min = 0;
+                this.hour = this.hour + 1;
+              }
+              this.sec = this.sec + 1;
+              let hours = this.hour < 10 ? `0${this.hour}` : `${this.hour}`;
+              let mins = this.min < 10 ? `0${this.min}` : `${this.min}`;
+              let secs = this.sec < 10 ? `0${this.sec}` : `${this.sec}`;
+              this.elapseTime = `${hours}:${mins}:${secs}`;
+            }, 1000);
+          }
+          this.isClockRunning = true;
+          return this.elapseTime;
+        }
+
+        stop() {
+          this.isClockRunning = false;
+          clearInterval(this.interval);
+          console.log(this.elapseTime);
+        }
+        reset() {
+          this.sec = 0;
+          this.min = 0;
+          this.hour = 0;
+          this.interval = 0;
+          this.elapseTime = "00:00:00";
+        }
+      }
+      // selecting elements
+      let startEle = document.querySelector(".startBtn");
+      let stopEle = document.querySelector(".stopBtn");
+      let resetEle = document.querySelector(".resetBtn");
+      let timer = new Timer();
+      let displayTimerId;
+      let paraEle = document.createElement("p");
+      function displayTime() {
+        displayTimerId = setInterval(() => {
+          document.body.appendChild(
+            paraEle
+          ).textContent = `${timer.elapseTime}`;
+        }, 1000);
+        return displayTimerId;
+      }
+      startEle.addEventListener("click", function () {
+        timer.start();
+        displayTime();
+      });
+      stopEle.addEventListener("click", function () {
+        timer.stop();
+        clearInterval(displayTime);
+        paraEle.textContent = "";
+      });
+      resetEle.addEventListener("click", function () {
+        timer.reset();
+        paraEle.textContent = `${timer.elapseTime}`;
+      });
+    </script>
+  </body>
+</html>
